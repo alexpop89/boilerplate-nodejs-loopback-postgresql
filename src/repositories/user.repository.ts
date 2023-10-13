@@ -8,13 +8,13 @@ import {RoleRepository} from './role.repository';
 
 export class UserRepository extends CustomCrudRepository<
   User,
-  typeof User.prototype._id,
+  typeof User.prototype.id,
   UserRelations
 > {
 
-  public readonly userLogs: HasManyRepositoryFactory<UserLog, typeof User.prototype._id>;
+  public readonly userLogs: HasManyRepositoryFactory<UserLog, typeof User.prototype.id>;
 
-  public readonly roles: HasManyRepositoryFactory<Role, typeof User.prototype._id>;
+  public readonly roles: HasManyRepositoryFactory<Role, typeof User.prototype.id>;
 
   constructor(
     @inject('datasources.default') dataSource: DefaultDataSource, @repository.getter('UserLogRepository') protected userLogRepositoryGetter: Getter<UserLogRepository>, @repository.getter('RoleRepository') protected roleRepositoryGetter: Getter<RoleRepository>,

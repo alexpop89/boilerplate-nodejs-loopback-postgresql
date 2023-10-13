@@ -2,14 +2,18 @@ import {model, property} from '@loopback/repository';
 import {Timestampable} from '.';
 import {RoleCondition} from './business/role-condition.business.model';
 
-@model()
+@model({
+  settings: {
+    postgresql: {schema: 'public', table: 'roles'},
+  },
+})
 export class Role extends Timestampable {
   @property({
-    type: 'string',
+    type: 'number',
     id: true,
     generated: true,
   })
-  _id?: string;
+  id?: string;
 
   @property({
     type: 'string',
@@ -33,6 +37,9 @@ export class Role extends Timestampable {
 
   @property({
     type: 'string',
+    postgresql: {
+      columnName: 'user_id',  // this is where the magic happens
+    },
   })
   userId?: string;
 

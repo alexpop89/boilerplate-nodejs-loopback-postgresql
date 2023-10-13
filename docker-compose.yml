@@ -9,8 +9,8 @@ services:
     ports:
       - "3000:3000"
     environment:
-      - DB_HOST=mongo
-      - DB_PORT=27017
+      - DB_HOST=postgres
+      - DB_PORT=5432
       - DB_NAME=boilerplate-database
       - DB_USER=boilerplate-database-username
       - DB_PASSWORD=boilerplate-database-password
@@ -19,11 +19,11 @@ services:
       - .:/home/node/app
 #    command: nodemon --delay 2s -e ts,json --ignore './dist' --watch /home/node/app/src --exec "yarn run start"
     command: "yarn run start"
-  mongo:
-    image: "mongo"
+  postgres:
+    image: "postgres"
     ports:
-      - "27017:27017"
+      - "5432:5432"
     environment:
-      - MONGO_INITDB_DATABASE=boilerplate-database
-      - MONGO_INITDB_ROOT_USERNAME=boilerplate-database-username
-      - MONGO_INITDB_ROOT_PASSWORD=boilerplate-database-password
+      - POSTGRES_DB=boilerplate-database
+      - POSTGRES_USER=boilerplate-database-username
+      - POSTGRES_PASSWORD=boilerplate-database-password

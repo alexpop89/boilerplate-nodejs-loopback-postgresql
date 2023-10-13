@@ -2,14 +2,18 @@ import {model, property, belongsTo} from '@loopback/repository';
 import {User} from './user.model';
 import {Timestampable} from './__timestampable.model';
 
-@model()
+@model({
+  settings: {
+    postgresql: {schema: 'public', table: 'user_logs'},
+  },
+})
 export class UserLog extends Timestampable {
   @property({
-    type: 'string',
+    type: 'number',
     id: true,
     generated: true,
   })
-  _id?: string;
+  id?: string;
 
   @property({
     type: 'string',

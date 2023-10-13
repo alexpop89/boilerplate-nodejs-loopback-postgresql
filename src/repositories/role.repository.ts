@@ -5,7 +5,7 @@ import {CustomCrudRepository} from './__custom-crud.repository';
 
 export class RoleRepository extends CustomCrudRepository<
   Role,
-  typeof Role.prototype._id,
+  typeof Role.prototype.id,
   RoleRelations
 > {
   constructor(

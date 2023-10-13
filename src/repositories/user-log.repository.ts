@@ -7,11 +7,11 @@ import {CustomCrudRepository} from './__custom-crud.repository';
 
 export class UserLogRepository extends CustomCrudRepository<
   UserLog,
-  typeof UserLog.prototype._id,
+  typeof UserLog.prototype.id,
   UserLogRelations
 > {
 
-  public readonly user: BelongsToAccessor<User, typeof UserLog.prototype._id>;
+  public readonly user: BelongsToAccessor<User, typeof UserLog.prototype.id>;
 
   constructor(
     @inject('datasources.default') dataSource: DefaultDataSource, @repository.getter('UserRepository') protected userRepositoryGetter: Getter<UserRepository>,

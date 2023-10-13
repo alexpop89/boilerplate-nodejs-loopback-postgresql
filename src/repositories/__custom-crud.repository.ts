@@ -1,3 +1,4 @@
+import {inject} from '@loopback/context';
 import {DefaultCrudRepository, juggler, Entity, EntityCrudRepository} from '@loopback/repository';
 
 export class CustomCrudRepository<T extends Entity, ID, Relations extends object = {}>
@@ -11,7 +12,7 @@ export class CustomCrudRepository<T extends Entity, ID, Relations extends object
     super(entityClass, dataSource);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (this.modelClass as any).observe('persist', async (ctx: any) => {
-      ctx.data._updatedAt = new Date();
+      ctx.data.updatedAt = new Date();
     });
   }
 }

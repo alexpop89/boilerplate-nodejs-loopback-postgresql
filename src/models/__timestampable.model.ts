@@ -5,14 +5,20 @@ export class Timestampable extends Entity {
   @property({
     type: 'date',
     default: '$now',
+    postgresql: {
+      columnName: 'created_at',  // this is where the magic happens
+    },
   })
-  _createdAt?: string;
+  createdAt?: string;
 
   @property({
     type: 'date',
     default: '$now',
+    postgresql: {
+      columnName: 'updated_at',  // this is where the magic happens
+    },
   })
-  _updatedAt?: string;
+  updatedAt?: string;
 
 
   constructor(data?: Partial<Timestampable>) {

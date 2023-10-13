@@ -57,18 +57,18 @@ export class UserUserLogController {
     },
   })
   async create(
-    @param.path.string('id') id: typeof User.prototype._id,
+    @param.path.string('id') id: typeof User.prototype.id,
     @requestBody({
       content: {
         'application/json': {
           schema: getModelSchemaRef(UserLog, {
             title: 'NewUserLogInUser',
-            exclude: ['_id', '_createdAt', '_updatedAt'],
+            exclude: ['id', 'createdAt', 'updatedAt'],
             optional: ['userId']
           }),
         },
       },
-    }) userLog: Omit<UserLog, '_id'>,
+    }) userLog: Omit<UserLog, 'id'>,
   ): Promise<UserLog> {
     return this.userRepository.userLogs(id).create(userLog);
   }

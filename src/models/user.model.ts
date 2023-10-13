@@ -3,14 +3,18 @@ import {UserLog} from './user-log.model';
 import {Timestampable} from './__timestampable.model';
 import {Role} from './role.model';
 
-@model()
+@model({
+  settings: {
+    postgresql: {schema: 'public', table: 'users'},
+  },
+})
 export class User extends Timestampable {
   @property({
-    type: 'string',
+    type: 'number',
     id: true,
     generated: true,
   })
-  _id?: string;
+  id?: string;
 
   @property({
     type: 'string',
@@ -41,6 +45,9 @@ export class User extends Timestampable {
       minLength: 2, // At least 2 characters
       maxLength: 50, // Up to 50 characters
     },
+    postgresql: {
+      columnName: 'first_name',  // this is where the magic happens
+    },
   })
   firstName?: string;
 
@@ -49,6 +56,9 @@ export class User extends Timestampable {
     jsonSchema: {
       minLength: 2, // At least 2 characters
       maxLength: 50, // Up to 50 characters
+    },
+    postgresql: {
+      columnName: 'last_name',  // this is where the magic happens
     },
   })
   lastName?: string;

@@ -2,11 +2,11 @@ import {inject, lifeCycleObserver, LifeCycleObserver} from '@loopback/core';
 import {juggler} from '@loopback/repository';
 
 const connectionURL = process.env.DATABASE_URL ??
-  `mongodb://${process.env.DB_USER}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}:${process.env.DB_PORT}/${process.env.DB_NAME}?retryWrites=true&w=majority&authSource=admin`;
+  `postgres://${process.env.DB_USER}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}:${process.env.DB_PORT}/${process.env.DB_NAME}`
 
 const config = {
   name: 'default',
-  connector: 'mongodb',
+  connector: 'postgresql',
   url: connectionURL,
   useNewUrlParser: true,
 };

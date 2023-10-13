@@ -16,8 +16,8 @@ export class UserService {
 
   convertToUserProfile(user: User): UserProfile {
     return {
-      [securityId]: user._id!,
-      _id: user._id!,
+      [securityId]: user.id!,
+      id: user.id!,
       email: user.email,
       firstName: user.firstName,
       lastName: user.lastName,

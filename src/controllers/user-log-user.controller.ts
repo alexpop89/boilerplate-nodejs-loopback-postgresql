@@ -33,7 +33,7 @@ export class UserLogUserController {
     },
   })
   async getUser(
-    @param.path.string('id') id: typeof UserLog.prototype._id,
+    @param.path.string('id') id: typeof UserLog.prototype.id,
   ): Promise<User> {
     return this.userLogRepository.user(id);
   }

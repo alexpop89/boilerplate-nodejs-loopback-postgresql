@@ -57,18 +57,18 @@ export class UserRoleController {
     },
   })
   async create(
-    @param.path.string('id') id: typeof User.prototype._id,
+    @param.path.string('id') id: typeof User.prototype.id,
     @requestBody({
       content: {
         'application/json': {
           schema: getModelSchemaRef(Role, {
             title: 'NewRoleInUser',
-            exclude: ['_id'],
+            exclude: ['id'],
             optional: ['userId']
           }),
         },
       },
-    }) role: Omit<Role, '_id'>,
+    }) role: Omit<Role, 'id'>,
   ): Promise<Role> {
     return this.userRepository.roles(id).create(role);
   }
