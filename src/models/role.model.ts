@@ -13,7 +13,7 @@ export class Role extends Timestampable {
     id: true,
     generated: true,
   })
-  id?: string;
+  id?: number;
 
   @property({
     type: 'string',
@@ -26,11 +26,11 @@ export class Role extends Timestampable {
 
   @property({
     type: 'array',
-    itemType: 'object',
+    itemType: RoleCondition,
     required: true,
     jsonSchema: {
       type: 'array',
-      items: RoleCondition.definition.properties
+      items: RoleCondition.definition.properties,
     },
   })
   conditions: RoleCondition[];
@@ -38,10 +38,10 @@ export class Role extends Timestampable {
   @property({
     type: 'string',
     postgresql: {
-      columnName: 'user_id',  // this is where the magic happens
+      columnName: 'user_id', // this is where the magic happens
     },
   })
-  userId?: string;
+  userId?: number;
 
   constructor(data?: Partial<Role>) {
     super(data);
@@ -53,3 +53,33 @@ export interface RoleRelations {
 }
 
 export type RoleWithRelations = Role & RoleRelations;
+
+export const defaultUserRole = {
+  name: 'user',
+  conditions: [
+    new RoleCondition({
+      modelName: 'User',
+      ownershipField: 'id',
+      value: '$currentUserId',
+      permissions: ['read', 'write', 'update'],
+    }),
+    new RoleCondition({
+      modelName: 'Role',
+      ownershipField: 'userId',
+      value: '$currentUserId',
+      permissions: ['read'],
+    }),
+  ],
+};
+
+export const defaultSuperAdminRole = {
+  name: 'super admin',
+  conditions: [
+    new RoleCondition({
+      modelName: '*',
+      ownershipField: '*',
+      value: '*',
+      permissions: ['*'],
+    }),
+  ],
+};

@@ -1,33 +1,15 @@
-import {
-  Count,
-  CountSchema,
-  Filter,
-  repository,
-  Where,
-} from '@loopback/repository';
-import {
-  del,
-  get,
-  getModelSchemaRef,
-  getWhereSchemaFor,
-  param,
-  patch,
-  post,
-  requestBody,
-} from '@loopback/rest';
-import {
-  User,
-  Role,
-} from '../models';
+import {Count, CountSchema, Filter, repository, Where} from '@loopback/repository';
+import {del, get, getModelSchemaRef, getWhereSchemaFor, param, patch, post, requestBody} from '@loopback/rest';
+import {User, Role} from '../models';
 import {UserRepository} from '../repositories';
 import {authenticate} from '@loopback/authentication';
+import {implementsAuthorization} from '../decorators/implements-authorization.decorator';
 
 export class UserRoleController {
-  constructor(
-    @repository(UserRepository) protected userRepository: UserRepository,
-  ) { }
+  constructor(@repository(UserRepository) protected userRepository: UserRepository) {}
 
   @authenticate('jwt')
+  @implementsAuthorization()
   @get('/users/{id}/roles', {
     responses: {
       '200': {
@@ -40,14 +22,12 @@ export class UserRoleController {
       },
     },
   })
-  async find(
-    @param.path.string('id') id: string,
-    @param.query.object('filter') filter?: Filter<Role>,
-  ): Promise<Role[]> {
+  async find(@param.path.string('id') id: number, @param.query.object('filter') filter?: Filter<Role>): Promise<Role[]> {
     return this.userRepository.roles(id).find(filter);
   }
 
   @authenticate('jwt')
+  @implementsAuthorization()
   @post('/users/{id}/roles', {
     responses: {
       '200': {
@@ -64,16 +44,18 @@ export class UserRoleController {
           schema: getModelSchemaRef(Role, {
             title: 'NewRoleInUser',
             exclude: ['id'],
-            optional: ['userId']
+            optional: ['userId'],
           }),
         },
       },
-    }) role: Omit<Role, 'id'>,
+    })
+    role: Omit<Role, 'id'>,
   ): Promise<Role> {
     return this.userRepository.roles(id).create(role);
   }
 
   @authenticate('jwt')
+  @implementsAuthorization()
   @patch('/users/{id}/roles', {
     responses: {
       '200': {
@@ -83,7 +65,7 @@ export class UserRoleController {
     },
   })
   async patch(
-    @param.path.string('id') id: string,
+    @param.path.string('id') id: number,
     @requestBody({
       content: {
         'application/json': {
@@ -98,6 +80,7 @@ export class UserRoleController {
   }
 
   @authenticate('jwt')
+  @implementsAuthorization()
   @del('/users/{id}/roles', {
     responses: {
       '200': {
@@ -106,10 +89,7 @@ export class UserRoleController {
       },
     },
   })
-  async delete(
-    @param.path.string('id') id: string,
-    @param.query.object('where', getWhereSchemaFor(Role)) where?: Where<Role>,
-  ): Promise<Count> {
+  async delete(@param.path.string('id') id: number, @param.query.object('where', getWhereSchemaFor(Role)) where?: Where<Role>): Promise<Count> {
     return this.userRepository.roles(id).delete(where);
   }
 }

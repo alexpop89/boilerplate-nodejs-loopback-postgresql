@@ -1,7 +1,8 @@
-import {model, property, hasMany} from '@loopback/repository';
+import {model, property, hasMany, hasOne} from '@loopback/repository';
 import {UserLog} from './user-log.model';
 import {Timestampable} from './__timestampable.model';
 import {Role} from './role.model';
+import {RefreshToken} from './refresh-token.model';
 
 @model({
   settings: {
@@ -14,11 +15,14 @@ export class User extends Timestampable {
     id: true,
     generated: true,
   })
-  id?: string;
+  id?: number;
 
   @property({
     type: 'string',
     required: true,
+    index: {
+      unique: true,
+    },
     jsonSchema: {
       minLength: 5,
       maxLength: 255,
@@ -46,7 +50,7 @@ export class User extends Timestampable {
       maxLength: 50, // Up to 50 characters
     },
     postgresql: {
-      columnName: 'first_name',  // this is where the magic happens
+      columnName: 'first_name', // this is where the magic happens
     },
   })
   firstName?: string;
@@ -58,7 +62,7 @@ export class User extends Timestampable {
       maxLength: 50, // Up to 50 characters
     },
     postgresql: {
-      columnName: 'last_name',  // this is where the magic happens
+      columnName: 'last_name', // this is where the magic happens
     },
   })
   lastName?: string;
@@ -68,6 +72,9 @@ export class User extends Timestampable {
 
   @hasMany(() => Role)
   roles: Role[];
+
+  @hasOne(() => RefreshToken)
+  refreshToken: RefreshToken;
 
   constructor(data?: Partial<User>) {
     super(data);

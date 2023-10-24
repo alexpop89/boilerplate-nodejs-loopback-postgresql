@@ -26,12 +26,18 @@ export async function up(knex: Knex): Promise<void> {
       table.integer('user_id').references('id').inTable('users');
       table.timestamp('created_at').defaultTo(knex.fn.now());
       table.timestamp('updated_at').defaultTo(knex.fn.now());
+    })
+    .createTable('refresh_tokens', function (table) {
+      table.increments('id').primary();
+      table.string('value').notNullable();
+      table.timestamp('expires');
+      table.integer('userId').references('id').inTable('users').onDelete('CASCADE').onUpdate('CASCADE');
+      table.timestamp('created_at').defaultTo(knex.fn.now());
+      table.timestamp('updated_at').defaultTo(knex.fn.now());
+      table.unique('value');
     });
 }
 
 export async function down(knex: Knex): Promise<void> {
-  return knex.schema
-    .dropTable('userLog')
-    .dropTable('role')
-    .dropTable('user');
+  return knex.schema.dropTable('userLog').dropTable('role').dropTable('user').dropTableIfExists('refresh_tokens');
 }

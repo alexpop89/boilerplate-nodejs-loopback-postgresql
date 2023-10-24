@@ -13,7 +13,7 @@ export class UserLog extends Timestampable {
     id: true,
     generated: true,
   })
-  id?: string;
+  id?: number;
 
   @property({
     type: 'string',
@@ -26,8 +26,8 @@ export class UserLog extends Timestampable {
   })
   data?: object;
 
-  @belongsTo(() => User)
-  userId: string;
+  @belongsTo(() => User, {keyTo: 'user_id'})
+  userId: number;
 
   constructor(data?: Partial<UserLog>) {
     super(data);

@@ -1,6 +1,6 @@
 {
   "name": "boilerplate-nodejs-loopback",
-  "version": "0.1.1",
+  "version": "1.0.0",
   "description": "boilerplate-nodejs-loopback",
   "keywords": [
     "loopback-application",
@@ -9,7 +9,7 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "engines": {
-    "node": "16 || 18 || 20"
+    "node": "^18.17.0 || >=20.5.0"
   },
   "scripts": {
     "build": "lb-tsc",
@@ -21,10 +21,11 @@
     "prettier:fix": "yarn run prettier:cli --write",
     "eslint": "lb-eslint --report-unused-disable-directives .",
     "eslint:fix": "yarn run eslint --fix",
-    "pretest": "yarn run rebuild",
-    "test": "lb-mocha --allow-console-logs \"dist/__tests__\"",
-    "posttest": "yarn run lint",
-    "test:dev": "lb-mocha --allow-console-logs dist/__tests__/**/*.js && yarn run posttest",
+    "coverage": "open coverage/index.html",
+    "coverage:ci": "lb-nyc report --reporter=text-lcov | coveralls",
+    "pretest": "docker-compose up postgres -d && yarn run rebuild",
+    "test": "DB_NAME=test-database lb-nyc lb-mocha --timeout 5000 --allow-console-logs \"dist/__tests__\"",
+    "posttest": "docker-compose down postgres && yarn run lint:fix && yarn run lint && yarn run coverage",
     "docker:build": "docker build -t boilerplate-nodejs-loopback .",
     "docker:run": "docker run -p 3000:3000 -d boilerplate-nodejs-loopback",
     "premigrate": "yarn run build",
@@ -71,14 +72,18 @@
     "@types/bcryptjs": "2.4.4",
     "@types/jsonwebtoken": "9.0.3",
     "@types/node": "16.18.55",
+    "@types/uuid": "9.0.6",
     "bcryptjs": "2.4.3",
+    "date-fns": "2.30.0",
+    "dotenv": "16.3.1",
     "jsonwebtoken": "9.0.2",
-    "knex": "^3.0.1",
+    "knex": "3.0.1",
     "loopback-connector-postgresql": "6.0.8",
-    "postgres": "^3.4.0",
-    "ts-node": "^10.9.1",
+    "postgres": "3.4.1",
+    "ts-node": "10.9.1",
     "tslib": "2.6.2",
-    "typescript": "5.2.2"
+    "typescript": "5.2.2",
+    "uuid": "9.0.1"
   },
   "devDependencies": {
     "eslint": "8.50.0",

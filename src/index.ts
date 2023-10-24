@@ -1,3 +1,5 @@
+import 'dotenv/config';
+
 import {ApplicationConfig, MainApplication} from './application';
 
 export * from './application';
@@ -7,6 +9,7 @@ const ALLOWED_ORIGINS = process.env.CORS_ORIGIN ?? '*';
 export async function main(options: ApplicationConfig = {}) {
   const app = new MainApplication(options);
   await app.boot();
+  await app.migrateSchema();
   await app.start();
 
   const url = app.restServer.url;
@@ -21,7 +24,7 @@ if (require.main === module) {
   const config = {
     expressSettings: {
       'x-powered-by': false,
-      'env': process.env.STAGE !== 'local' ? 'production' : 'development',
+      env: process.env.STAGE !== 'local' ? 'production' : 'development',
     },
     rest: {
       port: process.env.PORT ?? 3000,

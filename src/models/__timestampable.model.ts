@@ -6,7 +6,7 @@ export class Timestampable extends Entity {
     type: 'date',
     default: '$now',
     postgresql: {
-      columnName: 'created_at',  // this is where the magic happens
+      columnName: 'created_at', // this is where the magic happens
     },
   })
   createdAt?: string;
@@ -15,11 +15,10 @@ export class Timestampable extends Entity {
     type: 'date',
     default: '$now',
     postgresql: {
-      columnName: 'updated_at',  // this is where the magic happens
+      columnName: 'updated_at', // this is where the magic happens
     },
   })
   updatedAt?: string;
-
 
   constructor(data?: Partial<Timestampable>) {
     super(data);

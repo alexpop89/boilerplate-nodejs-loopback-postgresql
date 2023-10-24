@@ -14,7 +14,11 @@ services:
       - DB_NAME=boilerplate-database
       - DB_USER=boilerplate-database-username
       - DB_PASSWORD=boilerplate-database-password
+      - JWT_SECRET_KEY=Mdc6PVaq-q*sxFnFjvA@LhAs
+      - JWT_EXPIRATION_SECONDS=3600
 #      - DEBUG=loopback:*
+    networks:
+      - boilerplate-network
     volumes:
       - .:/home/node/app
 #    command: nodemon --delay 2s -e ts,json --ignore './dist' --watch /home/node/app/src --exec "yarn run start"
@@ -27,3 +31,8 @@ services:
       - POSTGRES_DB=boilerplate-database
       - POSTGRES_USER=boilerplate-database-username
       - POSTGRES_PASSWORD=boilerplate-database-password
+    networks:
+      - boilerplate-network
+networks:
+  boilerplate-network:
+    driver: bridge
