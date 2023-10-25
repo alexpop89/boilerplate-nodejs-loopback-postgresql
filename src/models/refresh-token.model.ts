@@ -26,7 +26,7 @@ export class RefreshToken extends Timestampable {
   })
   expires?: Date;
 
-  @belongsTo(() => User, {name: 'user', keyTo: 'user_id'})
+  @belongsTo(() => User, {keyFrom: 'userId'}, {name: 'user_id'})
   userId: number;
 
   user: User;

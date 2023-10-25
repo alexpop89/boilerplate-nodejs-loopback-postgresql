@@ -9,7 +9,7 @@ export async function setupApplication(): Promise<AppWithClient> {
   });
 
   await app.boot();
-  await app.migrateSchema();
+  // await app.migrateSchema(); // DO NOT MIGRATE since we use knex
   await app.start();
 
   const client = createRestAppClient(app);

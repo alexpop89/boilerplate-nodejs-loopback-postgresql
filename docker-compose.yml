@@ -20,11 +20,11 @@ services:
     networks:
       - boilerplate-network
     volumes:
-      - .:/home/node/app
+      - boilerplate-web-app:/home/node/app
 #    command: nodemon --delay 2s -e ts,json --ignore './dist' --watch /home/node/app/src --exec "yarn run start"
     command: "yarn run start"
   postgres:
-    image: "postgres"
+    image: "postgres:15.1"
     ports:
       - "5432:5432"
     environment:
@@ -33,6 +33,24 @@ services:
       - POSTGRES_PASSWORD=boilerplate-database-password
     networks:
       - boilerplate-network
+    volumes:
+      - boilerplate-postgres:/var/lib/postgresql/data
+  postgres_test:
+    image: "postgres:15.1"
+    ports:
+      - "5433:5432"
+    environment:
+      - POSTGRES_DB=test-database
+      - POSTGRES_USER=test-username
+      - POSTGRES_PASSWORD=test-password
+    networks:
+      - boilerplate-network
+    volumes:
+      - boilerplate-postgres-test:/var/lib/postgresql/data
 networks:
   boilerplate-network:
     driver: bridge
+volumes:
+  boilerplate-web-app:
+  boilerplate-postgres:
+  boilerplate-postgres-test:

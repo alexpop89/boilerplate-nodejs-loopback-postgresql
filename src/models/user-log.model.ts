@@ -26,7 +26,7 @@ export class UserLog extends Timestampable {
   })
   data?: object;
 
-  @belongsTo(() => User, {keyTo: 'user_id'})
+  @belongsTo(() => User, {keyFrom: 'userId'}, {name: 'user_id'})
   userId: number;
 
   constructor(data?: Partial<UserLog>) {

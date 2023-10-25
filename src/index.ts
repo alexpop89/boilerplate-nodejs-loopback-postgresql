@@ -9,7 +9,7 @@ const ALLOWED_ORIGINS = process.env.CORS_ORIGIN ?? '*';
 export async function main(options: ApplicationConfig = {}) {
   const app = new MainApplication(options);
   await app.boot();
-  await app.migrateSchema();
+  // await app.migrateSchema(); // DO NOT MIGRATE since we use knex
   await app.start();
 
   const url = app.restServer.url;

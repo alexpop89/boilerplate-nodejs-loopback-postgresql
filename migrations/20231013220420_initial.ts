@@ -31,7 +31,7 @@ export async function up(knex: Knex): Promise<void> {
       table.increments('id').primary();
       table.string('value').notNullable();
       table.timestamp('expires');
-      table.integer('userId').references('id').inTable('users').onDelete('CASCADE').onUpdate('CASCADE');
+      table.integer('user_id').references('id').inTable('users').onDelete('CASCADE').onUpdate('CASCADE');
       table.timestamp('created_at').defaultTo(knex.fn.now());
       table.timestamp('updated_at').defaultTo(knex.fn.now());
       table.unique('value');
