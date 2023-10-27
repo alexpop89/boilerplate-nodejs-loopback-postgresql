@@ -39,5 +39,5 @@ export async function up(knex: Knex): Promise<void> {
 }
 
 export async function down(knex: Knex): Promise<void> {
-  return knex.schema.dropTable('userLog').dropTable('role').dropTable('user').dropTableIfExists('refresh_tokens');
+  return knex.schema.dropTable('user_logs').dropTable('role').dropTable('user').dropTableIfExists('refresh_tokens');
 }
