@@ -6,10 +6,7 @@ import {implementsAuthorization} from '../decorators/implements-authorization.de
 import {authenticate} from '@loopback/authentication';
 
 export class RoleController {
-  constructor(
-    @repository(RoleRepository)
-    public roleRepository: RoleRepository,
-  ) {}
+  constructor(@repository(RoleRepository) public roleRepository: RoleRepository) {}
 
   @authenticate('jwt')
   @implementsAuthorization()

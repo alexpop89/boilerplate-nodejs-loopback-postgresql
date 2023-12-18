@@ -12,7 +12,7 @@ export async function main(options: ApplicationConfig = {}) {
   // await app.migrateSchema(); // DO NOT MIGRATE since we use knex
   await app.start();
 
-  const url = app.restServer.url;
+  const url = app.restServer.url ?? '';
   console.log(`Server is running at ${url}`);
   console.log(`Try ${url}/ping`);
 
@@ -46,6 +46,15 @@ if (require.main === module) {
       },
       apiExplorer: {
         disabled: process.env.STAGE === 'production',
+      },
+    },
+    websocket: {
+      port: process.env.WEBSOCKET_PORT ?? 3001,
+      cleanupEmptyChildNamespaces: false,
+      cors: {
+        origin: '*',
+        methods: ['GET', 'POST', 'OPTIONS'],
+        credentials: false,
       },
     },
   };

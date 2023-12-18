@@ -8,6 +8,7 @@ import {TokenServiceBindings} from '../keys';
 import {RoleRepository} from '../repositories';
 import {repository} from '@loopback/repository';
 import {OwnershipCheckerUtil} from './utils';
+import {LoggingBindings, WinstonLogger} from '@loopback/logging';
 
 /**
  * Provides the authorization interceptor functionality by extending the `OwnershipCheckerUtil` class.
@@ -23,16 +24,18 @@ export class AuthorizationInterceptorProvider extends OwnershipCheckerUtil imple
    * @param {string} _methodName - The method name to intercept within the controller.
    * @param {RoleRepository} roleRepository - Repository for fetching role information.
    * @param {Context} ctx - The Loopback application context.
+   * @param {WinstonLogger} logger
    */
   constructor(
     @inject(TokenServiceBindings.TOKEN_SERVICE)
     public tokenService: TokenService,
-    @inject(CoreBindings.CONTROLLER_CLASS, {optional: false})
+    @inject(CoreBindings.CONTROLLER_CLASS, {optional: true})
     protected _controllerClass: Constructor<{}>,
-    @inject(CoreBindings.CONTROLLER_METHOD_NAME, {optional: false})
+    @inject(CoreBindings.CONTROLLER_METHOD_NAME, {optional: true})
     protected _methodName: string,
     @repository(RoleRepository) public roleRepository: RoleRepository,
     @inject(CoreBindings.APPLICATION_INSTANCE) protected ctx: Context,
+    @inject(LoggingBindings.WINSTON_LOGGER) private logger: WinstonLogger,
   ) {
     super(ctx);
   }
@@ -53,7 +56,10 @@ export class AuthorizationInterceptorProvider extends OwnershipCheckerUtil imple
    * @returns {Promise<InvocationResult>} - The result after executing the intercept logic.
    */
   async intercept(invocationCtx: InvocationContext, next: () => ValueOrPromise<InvocationResult>): Promise<InvocationResult> {
-    const usesAuthorization = Reflect.hasMetadata(AUTHORIZATION_KEY, this._controllerClass.prototype, this._methodName);
+    if (!invocationCtx.getSync('rest.http.request.context', {optional: true})) {
+      return next();
+    }
+    const usesAuthorization = Reflect.hasMetadata(AUTHORIZATION_KEY, this._controllerClass?.prototype, this._methodName);
 
     // Detect if method uses the @implementsAuthorization(() decorator or not
     if (!usesAuthorization) {

@@ -1,8 +1,10 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+import * as winston from 'winston';
+
 import {BootMixin} from '@loopback/boot';
-import {ApplicationConfig, asGlobalInterceptor} from '@loopback/core';
+import {ApplicationConfig, asGlobalInterceptor, extensionFor} from '@loopback/core';
 import {RestExplorerBindings, RestExplorerComponent} from '@loopback/rest-explorer';
 import {RepositoryMixin} from '@loopback/repository';
-import {RestApplication} from '@loopback/rest';
 import {ServiceMixin} from '@loopback/service-proxy';
 import path from 'path';
 import {MySequence} from './sequence';
@@ -13,10 +15,13 @@ import {TokenServiceBindings, UserServiceBindings} from './keys';
 import {AuthorizationComponent} from '@loopback/authorization';
 import {JWTAuthenticationComponent} from '@loopback/authentication-jwt';
 import {AuthorizationInterceptorProvider} from './interceptors/authorization.interceptor';
+import {LoggingBindings, LoggingComponent, WINSTON_FORMAT, WINSTON_TRANSPORT, WinstonTransports} from '@loopback/logging';
+import {WebsocketApplication} from './websockets/websocket.application';
+import {WebsocketControllerBooter} from './websockets/websocket.booter';
 
 export {ApplicationConfig};
 
-export class MainApplication extends BootMixin(ServiceMixin(RepositoryMixin(RestApplication))) {
+export class MainApplication extends BootMixin(ServiceMixin(RepositoryMixin(WebsocketApplication))) {
   constructor(options: ApplicationConfig = {}) {
     super(options);
 
@@ -34,22 +39,53 @@ export class MainApplication extends BootMixin(ServiceMixin(RepositoryMixin(Rest
       this.component(RestExplorerComponent);
     }
 
+    this.booters(WebsocketControllerBooter);
+
     this.projectRoot = __dirname;
-    // Customize @loopback/boot Booter Conventions here
+
     this.bootOptions = {
       controllers: {
-        // Customize ControllerBooter Conventions here
         dirs: ['controllers'],
         extensions: ['.controller.js'],
         nested: true,
       },
+      websocketControllers: {
+        dirs: ['controllers-websocket'],
+        extensions: ['.controller.ws.js'],
+        nested: true,
+      },
     };
 
+    // Set up logging
+    this.setupLogging();
     // Set up authentication
+    this.setupAuthentication();
+  }
+
+  setupLogging() {
+    // https://loopback.io/doc/en/lb4/Logging.html
+    this.configure(LoggingBindings.COMPONENT).to({
+      enableFluent: false, // set to true if using Fluentd
+      enableHttpAccessLog: false,
+    });
+    this.component(LoggingComponent);
+    this.bind('logging.winston.transports.console')
+      .to(
+        new WinstonTransports.Console({
+          format: winston.format.combine(winston.format.colorize(), winston.format.simple()),
+          level: process.env.STAGE === 'production' ? 'info' : 'debug',
+        }),
+      )
+      .apply(extensionFor(WINSTON_TRANSPORT));
+    this.bind('logging.winston.formats.colorize').to(winston.format.colorize()).apply(extensionFor(WINSTON_FORMAT));
+  }
+
+  setupAuthentication() {
     this.component(AuthenticationComponent);
     this.component(AuthorizationComponent);
     this.component(JWTAuthenticationComponent);
 
+    // @ts-ignore
     registerAuthenticationStrategy(this, JWTAuthenticationStrategy);
 
     this.bind(UserServiceBindings.USER_SERVICE).toClass(UserService);
